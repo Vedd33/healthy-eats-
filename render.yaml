@@ -1,13 +1,13 @@
 services:
   - type: web
     name: pure-healthy-eats
-    env: java
+    runtime: java
     buildCommand: ./mvnw clean package -DskipTests
     startCommand: java -jar target/pure-healthy-eats-0.0.1-SNAPSHOT.jar
     plan: free
     healthCheckPath: /
-    envVars:
-      - key: SERVER_PORT
-        value: "10000"
-      - key: SPRING_PROFILES_ACTIVE
-        value: "prod"
+    env:
+      - key: JAVA_VERSION
+        value: "17"
+      - key: MAVEN_OPTS
+        value: "-Xmx512m"
