@@ -5,8 +5,16 @@ FROM maven:3.9.5-openjdk-17-slim AS build
 
 WORKDIR /app
 
+# Install necessary packages for debugging
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    curl \
+    && rm -rf /var/lib/apt/lists/*
+
 # Copy pom.xml first for better Docker layer caching
 COPY pom.xml .
+
+# Verify Maven is working and show version
+RUN mvn --version
 
 # Download dependencies (this layer will be cached if pom.xml doesn't change)
 RUN mvn dependency:go-offline -B
@@ -14,8 +22,15 @@ RUN mvn dependency:go-offline -B
 # Copy source code
 COPY src ./src
 
+# List files to debug
+RUN ls -la
+RUN ls -la src/
+
 # Build the application
-RUN mvn clean package -DskipTests
+RUN mvn clean package -DskipTests -B
+
+# Verify the JAR file was created
+RUN ls -la target/
 
 # Stage 2: Create the runtime image
 FROM openjdk:17-jre-slim

@@ -1,0 +1,28 @@
+# Ignore Git files
+.git
+.gitignore
+
+# Ignore IDE files
+.vscode
+.idea
+*.iml
+
+# Ignore OS files
+.DS_Store
+Thumbs.db
+
+# Ignore build outputs (will be built in container)
+target/
+*.jar
+*.war
+
+# Ignore logs
+*.log
+
+# Ignore documentation
+README.md
+docs/
+
+# Ignore deployment files
+render.yaml
+Dockerfile.*
