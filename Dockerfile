@@ -18,15 +18,24 @@ COPY src ./src
 RUN mvn clean package -DskipTests
 
 # Stage 2: Create the runtime image
-FROM openjdk:17-jdk-slim
+FROM openjdk:17-jre-slim
 
 WORKDIR /app
+
+# Create a non-root user for security
+RUN addgroup --system spring && adduser --system --group spring
 
 # Copy the built JAR from the build stage
 COPY --from=build /app/target/pure-healthy-eats-0.0.1-SNAPSHOT.jar app.jar
 
-# Expose port
+# Change ownership of the app directory
+RUN chown -R spring:spring /app
+
+# Switch to non-root user
+USER spring:spring
+
+# Expose port (will be overridden by PORT env var)
 EXPOSE 8080
 
-# Run the application
-CMD ["java", "-jar", "app.jar"]
+# Run the application with proper JVM options for containers
+CMD ["java", "-XX:+UseContainerSupport", "-XX:MaxRAMPercentage=75.0", "-Dserver.port=${PORT:-8080}", "-jar", "app.jar"]
