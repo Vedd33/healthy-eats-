@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Pure Healthy Eats</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/menu">Menu</a></li>
+            <li><a href="/cart">Cart</a></li>
+            <li th:if="${session.userName} != null"><a href="/logout">Logout</a></li>
+            <li th:if="${session.userName} == null"><a href="/login">Login</a></li>
+        </ul>
+    </nav>
+
+    <h2>Checkout</h2>
+
+    <div th:if="${error}" class="error">
+        <p th:text="${error}"></p>
+    </div>
+
+    <form th:action="@{/checkout/process}" method="post">
+        <div>
+            <label for="name">Full Name:</label>
+            <input type="text" id="name" name="customerName" th:value="${customerName}" required />
+        </div>
+
+        <div>
+            <label for="email">Email Address:</label>
+            <input type="email" id="email" name="customerEmail" th:value="${customerEmail}" required />
+        </div>
+
+        <h3>Order Summary</h3>
+        <ul>
+            <li th:each="item : ${cartItems}">
+                <span th:text="${item.menuItem.name}"></span> x <span th:text="${item.quantity}"></span>
+            </li>
+        </ul>
+        <p>Total: <span th:text="${cartTotal}"></span></p>
+
+        <button type="submit">Place Order</button>
+    </form>
+
+</body>
+</html>
+

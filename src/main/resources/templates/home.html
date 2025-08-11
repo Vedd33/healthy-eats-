@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Pure Healthy Eats</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/menu">Menu</a></li>
+            <li><a href="/cart">Cart</a></li>
+            <li th:if="${session.userName} != null"><a href="/logout">Logout</a></li>
+            <li th:if="${session.userName} == null"><a href="/login">Login</a></li>
+        </ul>
+    </nav>
+
+    <div class="container">
+        <h1 th:text="${companyName}">Pure Healthy Eats</h1>
+        <p th:text="${companyDescription}"></p>
+
+        <section>
+            <h2>Featured Salads</h2>
+            <div class="item-list">
+                <div th:each="item : ${featuredSalads}">
+                    <img th:src="@{${item.imageUrl}}" alt="Salad Image" class="menu-item-image" />
+                    <h3 th:text="${item.name}"></h3>
+                    <p th:text="${item.description}"></p>
+                    <form th:action="@{/cart/add}" method="post">
+                        <input type="hidden" name="menuItemId" th:value="${item.id}" />
+                        <input type="hidden" name="customizations" value="" />
+                        <button type="submit">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+
+        <section>
+            <h2>Featured Juices</h2>
+            <div class="item-list">
+                <div th:each="item : ${featuredJuices}">
+                    <img th:src="@{${item.imageUrl}}" alt="Juice Image" class="menu-item-image" />
+                    <h3 th:text="${item.name}"></h3>
+                    <p th:text="${item.description}"></p>
+                    <form th:action="@{/cart/add}" method="post">
+                        <input type="hidden" name="menuItemId" th:value="${item.id}" />
+                        <input type="hidden" name="customizations" value="" />
+                        <button type="submit">Add to Cart</button>
+                    </form>
+                </div>
+            </div>
+        </section>
+    </div>
+</body>
+</html>
+

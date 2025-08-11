@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bill - Pure Healthy Eats</title>
+    <link rel="stylesheet" th:href="@{/css/style.css}" />
+    <style>
+        .bill-container {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 2px solid #28a745;
+            border-radius: 10px;
+            background: white;
+        }
+        .bill-header {
+            text-align: center;
+            border-bottom: 2px solid #28a745;
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+        .bill-details {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        .bill-items {
+            border-collapse: collapse;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .bill-items th, .bill-items td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        .bill-items th {
+            background-color: #28a745;
+            color: white;
+        }
+        .bill-total {
+            text-align: right;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 20px;
+            padding-top: 10px;
+            border-top: 2px solid #28a745;
+        }
+        .print-btn {
+            text-align: center;
+            margin-top: 20px;
+        }
+        @media print {
+            .print-btn, nav { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <ul>
+            <li><a href="/">Home</a></li>
+            <li><a href="/menu">Menu</a></li>
+            <li><a href="/cart">Cart</a></li>
+            <li th:if="${session.userName} != null"><a href="/logout">Logout</a></li>
+            <li th:if="${session.userName} == null"><a href="/login">Login</a></li>
+        </ul>
+    </nav>
+
+    <div class="bill-container">
+        <div class="bill-header">
+            <h1>Pure Healthy Eats</h1>
+            <h2>BILL / RECEIPT</h2>
+            <p>Thank you for your order!</p>
+        </div>
+
+        <div class="bill-details">
+            <div>
+                <strong>Order ID:</strong> <span th:text="${order.id}"></span><br>
+                <strong>Date:</strong> <span th:text="${#temporals.format(order.orderDate, 'dd-MM-yyyy HH:mm')}"></span>
+            </div>
+            <div>
+                <strong>Customer:</strong> <span th:text="${order.customerName}"></span><br>
+                <strong>Email:</strong> <span th:text="${order.customerEmail}"></span>
+            </div>
+        </div>
+
+        <table class="bill-items">
+            <thead>
+                <tr>
+                    <th>Item</th>
+                    <th>Quantity</th>
+                    <th>Price</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr th:each="item : ${order.orderItems}">
+                    <td>
+                        <span th:text="${item.menuItem.name}"></span>
+                        <div th:if="${item.customizations}" style="font-size: 0.9em; color: #666;">
+                            <em>Customizations: <span th:text="${item.customizations}"></span></em>
+                        </div>
+                    </td>
+                    <td th:text="${item.quantity}"></td>
+                    <td>$<span th:text="${item.itemPrice}"></span></td>
+                    <td>$<span th:text="${item.totalPrice}"></span></td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div class="bill-total">
+            <strong>TOTAL AMOUNT: $<span th:text="${order.totalAmount}"></span></strong>
+        </div>
+
+        <div class="print-btn">
+            <button onclick="window.print()">Print Bill</button>
+            <a href="/" class="btn">Continue Shopping</a>
+        </div>
+    </div>
+
+</body>
+</html>
